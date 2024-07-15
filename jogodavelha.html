@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TIC TAC TOE</title>
+<style>
+  body {
+    background-color: #ffc0cb; /* rosa */
+    color: #fff; /* branco */
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 50px;
+  }
+  .game {
+    display: inline-block;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 10px;
+    justify-content: center;
+  }
+  .cell {
+    width: 100px;
+    height: 100px;
+    background-color: #fff;
+    color: #ffc0cb;
+    font-size: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .cell:hover {
+    background-color: #f8b6c2; /* rosa claro */
+  }
+  .restart-btn {
+    background-color: #ff69b4; /* rosa pink */
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 20px;
+    display: none; /* oculto inicialmente */
+  }
+</style>
+</head>
+<body>
+
+<h1>TIC TAC TOE</h1>
+
+<div class="game">
+  <div class="board">
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+    <div class="cell" data-cell></div>
+  </div>
+  <button class="restart-btn" onclick="restart()">Recomeçar</button>
+</div>
+
+<script>
+  const board = document.querySelector('.board');
+  const restartButton = document.querySelector('.restart-btn');
+  let currentPlayer = 'X';
+  let gameEnded = false;
+
+  // Adiciona o evento de clique para cada célula do tabuleiro
+  board.addEventListener('click', handleCellClick);
+
+  function handleCellClick(e) {
+    const cell = e.target;
+    if (!cell.classList.contains('cell') || cell.textContent !== '' || gameEnded) return;
+    cell.textContent = currentPlayer;
+    if (checkWin()) {
+      gameEnded = true;
+      showRestartButton();
+      setTimeout(() => {
+        alert(`Jogador ${currentPlayer} venceu!`);
+      }, 100); // Aviso de vitória com delay
+    } else if (checkDraw()) {
+      gameEnded = true;
+      setTimeout(() => {
+        alert(`Empate!`);
+      }, 100); // Aviso de empate com delay
+    } else {
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    }
+  }
+
+  function checkWin() {
+    const cells = document.querySelectorAll('.cell');
+    const winningConditions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+    return winningConditions.some(condition => {
+      return condition.every(index => {
+        return cells[index].textContent === currentPlayer;
+      });
+    });
+  }
+
+  function checkDraw() {
+    const cells = document.querySelectorAll('.cell');
+    return [...cells].every(cell => {
+      return cell.textContent !== '';
+    });
+  }
+
+  function showRestartButton() {
+    restartButton.style.display = 'inline-block';
+  }
+
+  function restart() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+      cell.textContent = '';
+    });
+    gameEnded = false;
+    currentPlayer = 'X';
+    restartButton.style.display = 'none'; // oculta o botão ao reiniciar o jogo
+  }
+</script>
+</body>
+
+</html>
